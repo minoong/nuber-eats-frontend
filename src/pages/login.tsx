@@ -2,13 +2,14 @@ import React from 'react'
 import { ApolloError, useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useForm } from 'react-hook-form'
-import Helmet from 'react-helmet'
+import { Helmet } from 'react-helmet-async'
 import nuberLogo from '../images/logo.svg'
 import FormError from '../components/form-error'
 import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation'
 import Button from '../components/button'
 import { Link } from 'react-router-dom'
-import { isLoggedInVar } from '../apollo'
+import { authTokenVar, isLoggedInVar } from '../apollo'
+import { LOCALSTORAGE_TOKEN } from '../utils/constants'
 
 const LOGIN_MUTATION = gql`
  mutation loginMutation($loginInput: LoginInput!) {
@@ -30,8 +31,9 @@ const onCompleted = (data: loginMutation) => {
   login: { ok, error, token },
  } = data
 
- if (ok) {
-  console.log(token)
+ if (ok && token) {
+  localStorage.setItem(LOCALSTORAGE_TOKEN, token)
+  authTokenVar(token)
   isLoggedInVar(true)
  }
 }
@@ -74,7 +76,7 @@ const Login = () => {
     <title>Login | Nuber Eats</title>
    </Helmet>
    <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
-    <img src={nuberLogo} alt="logo" className="w-52 mb-5" />
+    <img src={nuberLogo} alt="Nuber Eats" className="w-52 mb-5" />
     <h4 className="w-full font-medium text-left text-3xl mb-5">Welcome back</h4>
     <form className="grid gap-3 mt-5 w-full mb-5" onSubmit={handleSubmit(onSubmit)}>
      <input

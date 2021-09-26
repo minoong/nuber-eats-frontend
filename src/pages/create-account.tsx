@@ -2,7 +2,7 @@ import React from 'react'
 import { ApolloError, useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useForm } from 'react-hook-form'
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet-async'
 import nuberLogo from '../images/logo.svg'
 import FormError from '../components/form-error'
 import Button from '../components/button'
@@ -45,7 +45,8 @@ const CreateAccount = () => {
   } = data
 
   if (ok) {
-   history.push('/login')
+   alert('Account Created! Log In now!')
+   history.push('/')
   }
  }
 
@@ -74,7 +75,7 @@ const CreateAccount = () => {
     <title>Create Account | Nuber Eats</title>
    </Helmet>
    <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
-    <img src={nuberLogo} alt="logo" className="w-52 mb-5" />
+    <img src={nuberLogo} alt="Nuber Eats" className="w-52 mb-5" />
     <h4 className="w-full font-medium text-left text-3xl mb-5">Let's get started</h4>
     <form className="grid gap-3 mt-5 w-full mb-5" onSubmit={handleSubmit(onSubmit)}>
      <input
@@ -115,7 +116,7 @@ const CreateAccount = () => {
     </form>
     <div>
      Already have an account?{' '}
-     <Link className="text-lime-600 hover:underline" to="/login">
+     <Link className="text-lime-600 hover:underline" to="/">
       Create an Account
      </Link>
     </div>
