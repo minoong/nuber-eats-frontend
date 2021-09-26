@@ -6,8 +6,9 @@ import { Helmet } from 'react-helmet'
 import nuberLogo from '../images/logo.svg'
 import FormError from '../components/form-error'
 import Button from '../components/button'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { UserRole } from '../__generated__/globalTypes'
+import { createAccountMutation, createAccountMutationVariables } from '../__generated__/createAccountMutation'
 
 const CREATE_ACCOUNT_MUTATION = gql`
  mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
@@ -37,10 +38,35 @@ const CreateAccount = () => {
    role: UserRole.Client,
   },
  })
+ const history = useHistory()
+ const onCompleted = (data: createAccountMutation) => {
+  const {
+   createAccount: { ok, error },
+  } = data
 
- const [createAccountMutation] = useMutation(CREATE_ACCOUNT_MUTATION, {})
- console.log(watch())
- const onSubmit = () => {}
+  if (ok) {
+   history.push('/login')
+  }
+ }
+
+ const [createAccountMutation, { loading, data: createAccountMutationResult }] = useMutation<
+  createAccountMutation,
+  createAccountMutationVariables
+ >(CREATE_ACCOUNT_MUTATION, { onCompleted })
+ const onSubmit = () => {
+  if (!loading) {
+   const { email, password, role } = getValues()
+   createAccountMutation({
+    variables: {
+     createAccountInput: {
+      email,
+      password,
+      role,
+     },
+    },
+   })
+  }
+ }
 
  return (
   <div className="h-screen flex items-center flex-col mt-10 lg:mt-28">
@@ -52,7 +78,14 @@ const CreateAccount = () => {
     <h4 className="w-full font-medium text-left text-3xl mb-5">Let's get started</h4>
     <form className="grid gap-3 mt-5 w-full mb-5" onSubmit={handleSubmit(onSubmit)}>
      <input
-      {...register('email', { required: 'Email is required' })}
+      {...register('email', {
+       required: 'Email is required',
+       pattern: {
+        value:
+         /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        message: '이메일 형식으로 입력하세요',
+       },
+      })}
       name="email"
       type="email"
       required
@@ -75,7 +108,10 @@ const CreateAccount = () => {
        <option key={role}>{role}</option>
       ))}
      </select>
-     <Button canClick={isValid} loading={false} actionText={'Create Account'} />
+     <Button canClick={isValid} loading={loading} actionText={'Create Account'} />
+     {createAccountMutationResult?.createAccount.error && (
+      <FormError errorMessage={createAccountMutationResult.createAccount.error} />
+     )}
     </form>
     <div>
      Already have an account?{' '}
