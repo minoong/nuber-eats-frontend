@@ -46,7 +46,7 @@ const Login = () => {
   formState: { errors, isValid },
   getValues,
  } = useForm<ILoginForm>({
-  mode: 'all',
+  mode: 'onChange',
  })
 
  const [loginMutation, { loading, error, data: loginMutationResult }] = useMutation<

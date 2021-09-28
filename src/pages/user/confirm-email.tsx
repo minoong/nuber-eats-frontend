@@ -15,7 +15,7 @@ const VERIFY_EMAIL_MUTATION = gql`
 `
 
 const ConfirmEmail = () => {
- const { data: userData } = useMe()
+ const { data: userData, refetch } = useMe()
  const history = useHistory()
  const client = useApolloClient()
  const onCompleted = (data: verifyEmail) => {
@@ -35,6 +35,7 @@ const ConfirmEmail = () => {
      verified: true,
     },
    })
+   //    await refetch()
    history.push('/')
   }
  }

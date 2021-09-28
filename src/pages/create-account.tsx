@@ -33,7 +33,7 @@ const CreateAccount = () => {
   formState: { errors, isValid },
   getValues,
  } = useForm<ICreateAccountForm>({
-  mode: 'all',
+  mode: 'onChange',
   defaultValues: {
    role: UserRole.Client,
   },
