@@ -1,6 +1,7 @@
 import { useApolloClient, useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
 import React, { useEffect } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { useHistory } from 'react-router'
 import { useMe } from '../../hooks/useMe'
 import { verifyEmail, verifyEmailVariables } from '../../__generated__/verifyEmail'
@@ -59,6 +60,9 @@ const ConfirmEmail = () => {
 
  return (
   <div className="mt-52 flex flex-col items-center justify-center">
+   <Helmet>
+    <title>Verify Email | Nuber Eats</title>
+   </Helmet>
    <h2 className="text-lg mb-2 font-medium">Confirming email...</h2>
    <h4 className="text-gray-700 text-sm">Please wait, dont't close this page...</h4>
   </div>
