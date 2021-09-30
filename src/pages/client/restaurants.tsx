@@ -1,6 +1,8 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useHistory } from 'react-router'
 import Restaurant from '../../components/restaurant'
 import { restaurantsPageQuery, restaurantsPageQueryVariables } from '../../__generated__/restaurantsPageQuery'
 
@@ -36,6 +38,10 @@ const RESTAURANTS_QUERY = gql`
  }
 `
 
+interface IFormProps {
+ searchTerm: string
+}
+
 const Restaurants = () => {
  const [page, setPage] = useState(1)
  const { data, loading, error } = useQuery<restaurantsPageQuery, restaurantsPageQueryVariables>(RESTAURANTS_QUERY, {
@@ -48,16 +54,42 @@ const Restaurants = () => {
 
  const onNextPageClick = () => setPage((current) => current + 1)
  const onPrevPageClick = () => setPage((current) => current - 1)
+
+ const {
+  register,
+  handleSubmit,
+  watch,
+  formState: { errors, isValid },
+  getValues,
+ } = useForm<IFormProps>()
+ const history = useHistory()
+ const onSearchSubmit = () => {
+  const { searchTerm } = getValues()
+  history.push({
+   pathname: '/search',
+   search: `?term=${searchTerm}`,
+  })
+ }
+
  return (
   <div>
-   <form className="bg-gray-800 w-full py-40 flex items-center justify-center">
-    <input type="text" className="input rounded-md border-0 w-3/12" placeholder="Search restaurants..." />
+   <form onSubmit={handleSubmit(onSearchSubmit)} className="bg-gray-800 w-full py-40 flex items-center justify-center">
+    <input
+     {...register('searchTerm', {
+      required: true,
+      min: 3,
+     })}
+     name="searchTerm"
+     type="search"
+     className="input rounded-md border-0 w-3/4 md:w-3/12"
+     placeholder="Search restaurants..."
+    />
    </form>
    {!loading && (
     <div className="max-w-screen-2xl mx-auto mt-8 pb-20">
      <div className="flex justify-around max-w-sm mx-auto">
       {data?.allCategories.categories?.map((category) => (
-       <div className="flex flex-col group items-center cursor-pointer">
+       <div key={category.id} className="flex flex-col group items-center cursor-pointer">
         <div
          className="w-16 h-16 rounded-full bg-cover group-hover:bg-gray-200"
          style={{ backgroundImage: `url(${category.coverImage})` }}
@@ -66,9 +98,10 @@ const Restaurants = () => {
        </div>
       ))}
      </div>
-     <div className="grid mt-4 grid-cols-3 gap-x-5 gap-y-16">
+     <div className="grid mt-16 md:grid-cols-3 gap-x-5 gap-y-16">
       {data?.restaurants.results?.map((restaurant) => (
        <Restaurant
+        key={restaurant.id}
         id={restaurant.id + ''}
         coverImage={restaurant.coverImage}
         name={restaurant.name}
