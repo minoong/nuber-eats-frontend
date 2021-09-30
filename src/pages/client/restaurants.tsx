@@ -1,9 +1,11 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import React, { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { useHistory } from 'react-router'
 import Restaurant from '../../components/restaurant'
+import { RESTAURANT_FRAGMENT } from '../../utils/fragments'
 import { restaurantsPageQuery, restaurantsPageQueryVariables } from '../../__generated__/restaurantsPageQuery'
 
 const RESTAURANTS_QUERY = gql`
@@ -25,17 +27,11 @@ const RESTAURANTS_QUERY = gql`
    totalPages
    totalResults
    results {
-    id
-    name
-    coverImage
-    category {
-     name
-    }
-    address
-    isPromoted
+    ...RestaurantParts
    }
   }
  }
+ ${RESTAURANT_FRAGMENT}
 `
 
 interface IFormProps {
@@ -73,6 +69,9 @@ const Restaurants = () => {
 
  return (
   <div>
+   <Helmet>
+    <title>Search | Nuber Eats</title>
+   </Helmet>
    <form onSubmit={handleSubmit(onSearchSubmit)} className="bg-gray-800 w-full py-40 flex items-center justify-center">
     <input
      {...register('searchTerm', {
