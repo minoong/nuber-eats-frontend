@@ -6,10 +6,10 @@ import { Helmet } from 'react-helmet-async'
 import nuberLogo from '../images/logo.svg'
 import FormError from '../components/form-error'
 import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation'
-import Button from '../components/button'
 import { Link } from 'react-router-dom'
 import { authTokenVar, isLoggedInVar } from '../apollo'
 import { LOCALSTORAGE_TOKEN } from '../utils/constants'
+import Button from '../components/commons/button'
 
 const LOGIN_MUTATION = gql`
  mutation loginMutation($loginInput: LoginInput!) {

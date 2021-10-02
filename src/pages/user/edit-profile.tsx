@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 import React, { FormEventHandler } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
-import Button from '../../components/button'
+import Button from '../../components/commons/button'
 import { useMe } from '../../hooks/useMe'
 import { editProfile, editProfileVariables } from '../../__generated__/editProfile'
 
@@ -28,7 +28,6 @@ const EditProfile = () => {
   const {
    editProfile: { error, ok },
   } = data
-  console.log(data)
   if (ok && userData) {
    const {
     me: { email: prevEmail, id },
@@ -71,7 +70,6 @@ const EditProfile = () => {
  const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
   //   e.preventDefault()
   const { email, password } = getValues()
-  console.log(email, password)
   editProfile({
    variables: {
     input: {
