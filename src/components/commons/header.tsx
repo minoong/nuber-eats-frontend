@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { useMe } from '../../hooks/useMe'
 import nuberLogo from '../../images/logo.svg'
 
-const Header: React.FC = () => {
+export const Header: React.FC = () => {
  const { data } = useMe()
 
  return (
@@ -16,13 +16,13 @@ const Header: React.FC = () => {
     </div>
    )}
    <header className="py-4">
-    <div className="w-full px-0 xl:px-0 max-w-screen-2xl mx-auto flex justify-between items-center">
+    <div className="w-full px-5 xl:px-0 max-w-screen-2xl mx-auto flex justify-between items-center">
      <Link to="/">
-      <img src={nuberLogo} alt="Nuber Eats" className="w-36" />
+      <img src={nuberLogo} className="w-44" alt="Nuber Eats" />
      </Link>
      <span className="text-xs">
       <Link to="/edit-profile">
-       <FontAwesomeIcon icon={faUser} className="text-2xl" />
+       <FontAwesomeIcon icon={faUser} className="text-3xl" />
       </Link>
      </span>
     </div>
@@ -30,5 +30,3 @@ const Header: React.FC = () => {
   </>
  )
 }
-
-export default Header
