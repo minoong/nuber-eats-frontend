@@ -22,13 +22,7 @@ describe('Create Account', () => {
    if (operationName && operationName === 'createAccountMutation') {
     req.reply((res) => {
      res.send({
-      data: {
-       createAccount: {
-        ok: true,
-        error: null,
-        __typename: 'CreateAccountOutput',
-       },
-      },
+      fixture: 'auth/create-account.json',
      })
     })
    }
@@ -39,11 +33,7 @@ describe('Create Account', () => {
   user.findByRole('button').click()
 
   user.wait(1000)
-  user.title().should('eq', 'Login | Nuber Eats')
 
-  user.findByPlaceholderText(/email/i).type('real2@mail.com')
-  user.findByPlaceholderText(/password/i).type('1234')
-  user.findByRole('button').click()
-  cy.window().its('localStorage.nuber-token').should('be.a', 'string')
+  user.login('real2@mail.com', '1234')
  })
 })

@@ -18,10 +18,6 @@ describe('Log In', () => {
  })
 
  it('can fill out the form and log in', () => {
-  cy.visit('/')
-  cy.findByPlaceholderText(/email/i).type('client321@account.com')
-  cy.findByPlaceholderText(/password/i).type('1111')
-  cy.findByRole('button').should('not.have.class', 'pointer-events-none').click()
-  cy.window().its('localStorage.nuber-token').should('be.a', 'string')
+  cy.login('real2@mail.com', '1234')
  })
 })
