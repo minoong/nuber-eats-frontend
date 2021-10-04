@@ -44,6 +44,8 @@ const Category = () => {
   },
  })
 
+ console.log('123123', data)
+
  return (
   <div>
    <Helmet>

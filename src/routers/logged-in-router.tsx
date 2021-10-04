@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { UserRole } from '../__generated__/globalTypes'
 import Restaurants from '../pages/client/restaurants'
 import { Header } from '../components/commons/header'
@@ -10,26 +10,40 @@ import EditProfile from '../pages/user/edit-profile'
 import Search from '../pages/client/search'
 import Category from '../pages/client/category'
 import Restaurant from '../pages/client/restaurant'
+import MyRestaurants from '../pages/owner/my-restaurants'
+import AddRestaurants from '../pages/owner/add-restaurants'
 
-const ClientRoutes = [
- <Route key={1} path="/" exact>
-  <Restaurants />
- </Route>,
- <Route key={2} path="/confirm">
-  <ConfirmEmail />
- </Route>,
- <Route key={3} path="/edit-profile">
-  <EditProfile />
- </Route>,
- <Route key={4} path="/search">
-  <Search />
- </Route>,
- <Route key={5} path="/category/:slug">
-  <Category />
- </Route>,
- <Route key={6} path="/restaurants/:id">
-  <Restaurant />
- </Route>,
+const commonRoutes = [
+ { path: '/confirm', component: <ConfirmEmail /> },
+ { path: '/edit-profile', component: <EditProfile /> },
+]
+
+const clientRoutes = [
+ {
+  path: '/category/:slug',
+  exact: false,
+  component: <Category />,
+ },
+ {
+  path: '/search',
+  exact: false,
+  component: <Search />,
+ },
+ {
+  path: '/restaurants/:id',
+  exact: false,
+  component: <Restaurant />,
+ },
+ {
+  path: '',
+  exact: true,
+  component: <Restaurants />,
+ },
+]
+
+const restaurantRoutes = [
+ { path: '/', component: <MyRestaurants /> },
+ { path: '/add-restaurant', component: <AddRestaurants /> },
 ]
 
 export const LoggedInRouter = () => {
@@ -47,7 +61,25 @@ export const LoggedInRouter = () => {
   <Router>
    <Header />
    <Switch>
-    {data.me.role === UserRole.Client && ClientRoutes}
+    {commonRoutes.map((route) => (
+     <Route exact key={route.path} path={route.path}>
+      {route.component}
+     </Route>
+    ))}
+
+    {data.me.role === UserRole.Owner &&
+     restaurantRoutes.map((route) => (
+      <Route exact key={route.path} path={route.path}>
+       {route.component}
+      </Route>
+     ))}
+
+    {data.me.role === UserRole.Client &&
+     clientRoutes.map((route) => (
+      <Route exact key={route.path} path={route.path}>
+       {route.component}
+      </Route>
+     ))}
     <Route>
      <NotFound />
     </Route>

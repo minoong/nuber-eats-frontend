@@ -9,7 +9,7 @@ export const Header: React.FC = () => {
  const { data } = useMe()
 
  return (
-  <>
+  <div className="sticky top-0">
    {!data?.me.verified && (
     <div className="bg-red-500 p-3 text-center text-base text-white">
      <span>Please verify your email.</span>
@@ -27,6 +27,6 @@ export const Header: React.FC = () => {
      </span>
     </div>
    </header>
-  </>
+  </div>
  )
 }
