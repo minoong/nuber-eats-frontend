@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import React from 'react'
 import { useParams } from 'react-router'
 import { RESTAURANT_FRAGMENT } from '../../utils/fragments'
@@ -23,7 +22,7 @@ interface IRestaurantParams {
 
 const Restaurant = () => {
  const params = useParams<IRestaurantParams>()
- const { loading, data, error } = useQuery<restaurant, restaurantVariables>(RESTAURANT_QUERY, {
+ const { data } = useQuery<restaurant, restaurantVariables>(RESTAURANT_QUERY, {
   variables: {
    input: {
     restaurantId: +params.id,
