@@ -37,17 +37,22 @@ const MyRestaurants = () => {
       </Link>
      </>
     ) : (
-     <div className="grid mt-16 md:grid-cols-3 gap-x-5 gap-y-16">
-      {data?.myRestaurants.restaurants.map((restaurant) => (
-       <Restaurant
-        key={restaurant.id}
-        id={restaurant.id + ''}
-        coverImage={restaurant.coverImage}
-        name={restaurant.name}
-        categoryName={restaurant.category?.name}
-       />
-      ))}
-     </div>
+     <>
+      <Link to={`add-restaurant`} className="text-lime-600 hover:underline">
+       Add Restaurant &rarr;
+      </Link>
+      <div className="grid mt-16 md:grid-cols-3 gap-x-5 gap-y-16">
+       {data?.myRestaurants.restaurants.map((restaurant) => (
+        <Restaurant
+         key={restaurant.id}
+         id={restaurant.id + ''}
+         coverImage={restaurant.coverImage}
+         name={restaurant.name}
+         categoryName={restaurant.category?.name}
+        />
+       ))}
+      </div>
+     </>
     )}
    </div>
   </div>

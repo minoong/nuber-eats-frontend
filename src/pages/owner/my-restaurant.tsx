@@ -41,16 +41,6 @@ const MyRestaurant = () => {
    },
   },
  })
-
- const chartData = [
-  { x: 1, y: 3000 },
-  { x: 2, y: 2432 },
-  { x: 3, y: 6542 },
-  { x: 4, y: 1243 },
-  { x: 5, y: 47 },
-  { x: 6, y: 13244 },
-  { x: 7, y: 9765 },
- ]
  return (
   <div>
    <div
