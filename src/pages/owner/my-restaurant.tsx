@@ -2,7 +2,9 @@ import { gql, useQuery } from '@apollo/client'
 import React from 'react'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
-import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from '../../utils/fragments'
+import * as V from 'victory'
+import Dish from '../../components/dish'
+import { DISH_FRAGMENT, ORDERS_FRAGMENT, RESTAURANT_FRAGMENT } from '../../utils/fragments'
 import { myRestaurant, myRestaurantVariables } from '../../__generated__/myRestaurant'
 
 export const MY_RESTAURANT_QUERY = gql`
@@ -15,11 +17,15 @@ export const MY_RESTAURANT_QUERY = gql`
     menu {
      ...DishParts
     }
+    orders {
+     ...OrderParts
+    }
    }
   }
  }
  ${RESTAURANT_FRAGMENT}
  ${DISH_FRAGMENT}
+ ${ORDERS_FRAGMENT}
 `
 
 interface IParams {
@@ -35,7 +41,16 @@ const MyRestaurant = () => {
    },
   },
  })
- console.log(data)
+
+ const chartData = [
+  { x: 1, y: 3000 },
+  { x: 2, y: 2432 },
+  { x: 3, y: 6542 },
+  { x: 4, y: 1243 },
+  { x: 5, y: 47 },
+  { x: 6, y: 13244 },
+  { x: 7, y: 9765 },
+ ]
  return (
   <div>
    <div
@@ -51,7 +66,51 @@ const MyRestaurant = () => {
      Buy Promotion &rarr;
     </Link>
     <div className="mt-10">
-     {data?.myRestaurant.restaurant?.menu.length === 0 ? <h4 className="text-xl mb-5">Please upload a dish!</h4> : null}
+     {data?.myRestaurant.restaurant?.menu.length === 0 ? (
+      <h4 className="text-xl mb-5">Please upload a dish!</h4>
+     ) : (
+      <div className="grid mt-16 md:grid-cols-3 gap-x-5 gap-y-16">
+       {data?.myRestaurant.restaurant?.menu.map((dish, index) => (
+        <Dish key={index} description={dish.description} name={dish.name} price={dish.price} />
+       ))}
+      </div>
+     )}
+    </div>
+    <div className="mt-20 mb-10">
+     <h4 className="text-center text-2xl font-medium">Sales</h4>
+     <div className="mt-10">
+      <V.VictoryChart
+       height={500}
+       theme={V.VictoryTheme.material}
+       width={window.innerWidth}
+       domainPadding={50}
+       containerComponent={<V.VictoryVoronoiContainer />}
+      >
+       <V.VictoryLine
+        labels={({ datum }) => `$${datum.y}`}
+        labelComponent={<V.VictoryTooltip style={{ fontSize: 18 } as any} renderInPortal dy={-20} />}
+        data={data?.myRestaurant.restaurant?.orders.map((order) => ({
+         x: order.createdAt,
+         y: order.total,
+        }))}
+        interpolation="natural"
+        style={{
+         data: {
+          strokeWidth: 5,
+         },
+        }}
+       />
+       <V.VictoryAxis
+        tickLabelComponent={<V.VictoryLabel renderInPortal />}
+        style={{
+         tickLabels: {
+          fontSize: 20,
+         } as any,
+        }}
+        tickFormat={(tick) => new Date(tick).toLocaleDateString('ko')}
+       />
+      </V.VictoryChart>
+     </div>
     </div>
    </div>
   </div>
