@@ -2,9 +2,14 @@ import { gql, useQuery } from '@apollo/client'
 import React, { useState } from 'react'
 import { useParams } from 'react-router'
 import Dish from '../../components/dish'
+import DishOption from '../../components/dish-option'
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from '../../utils/fragments'
 import { CreateOrderItemInput } from '../../__generated__/globalTypes'
-import { restaurant, restaurantVariables } from '../../__generated__/restaurant'
+import {
+ restaurant,
+ restaurantVariables,
+ restaurant_restaurant_restaurant_menu_options_chioces,
+} from '../../__generated__/restaurant'
 
 const RESTAURANT_QUERY = gql`
  query restaurant($input: RestaurantInput!) {
@@ -54,18 +59,65 @@ const Restaurant = () => {
   if (isSelected(dishId)) {
    return
   }
-  setOrderItems((current) => [{ dishId }, ...current])
+  setOrderItems((current) => [{ dishId, options: [] }, ...current])
  }
 
  const removeFromOrder = (dishId: number) => {
   setOrderItems((current) => current.filter((dish) => dish.dishId !== dishId))
  }
 
+ const getItem = (dishId: number) => {
+  return orderItems.find((order) => order.dishId === dishId)
+ }
+
  const isSelected = (dishId: number) => {
-  return Boolean(orderItems.find((order) => order.dishId === dishId))
+  return Boolean(getItem(dishId))
+ }
+ const addOptionToItem = (dishId: number, optionName: string) => {
+  if (!isSelected(dishId)) {
+   return
+  }
+  const oldItem = getItem(dishId)
+
+  if (oldItem) {
+   const hasOption = Boolean(oldItem.options?.find((aOption) => aOption.name === optionName))
+   if (!hasOption) {
+    removeFromOrder(dishId)
+    setOrderItems((current) => [{ dishId, options: [{ name: optionName }, ...oldItem.options!] }, ...current])
+   }
+  }
  }
 
  console.log(orderItems)
+
+ const getOptionFromItem = (item: CreateOrderItemInput, optionName: string) => {
+  return item.options?.find((option) => option.name === optionName)
+ }
+
+ const isOptionSelected = (dishId: number, optionName: string) => {
+  const item = getItem(dishId)
+  if (item) {
+   return Boolean(getOptionFromItem(item, optionName))
+  }
+
+  return false
+ }
+
+ const removeOptionFromItem = (dishId: number, optionName: string) => {
+  if (!isSelected(dishId)) {
+   return
+  }
+  const oldItem = getItem(dishId)
+
+  if (oldItem) {
+   removeFromOrder(dishId)
+   setOrderItems((current) => [
+    { dishId, options: oldItem.options?.filter((option) => option.name !== optionName) },
+    ...current,
+   ])
+   return
+  }
+ }
  return (
   <div>
    <div
@@ -96,7 +148,19 @@ const Restaurant = () => {
        options={dish.options}
        addItemOrder={addItemOrder}
        removeFromOrder={removeFromOrder}
-      />
+      >
+       {dish.options?.map((option, index) => (
+        <DishOption
+         key={index}
+         dishId={dish.id}
+         isSelected={isOptionSelected(dish.id, option.name)}
+         name={option.name}
+         extra={option.extra}
+         addOptionToItem={addOptionToItem}
+         removeOptionFromItem={removeOptionFromItem}
+        />
+       ))}
+      </Dish>
      ))}
     </div>
    </div>
