@@ -141,6 +141,9 @@ const Restaurant = () => {
   setOrderItems([])
  }
  const triggerConfirmOrder = () => {
+  if (placingLoading) {
+   return
+  }
   if (orderItems.length === 0) {
    alert(`Can't place empty order`)
    return
