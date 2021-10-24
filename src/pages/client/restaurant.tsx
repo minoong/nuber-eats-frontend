@@ -126,8 +126,9 @@ const Restaurant = () => {
   const {
    createOrder: { ok, orderId },
   } = data
-  if (data.createOrder.ok) {
-   history.push(`/order/${orderId}`)
+  console.log(data)
+  if (ok) {
+   history.push(`/orders/${orderId}`)
   }
  }
  const [createOrderMutation, { loading: placingLoading }] = useMutation<createOrder, createOrderVariables>(

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ApolloError, gql, useMutation } from '@apollo/client'
+import { gql, useMutation } from '@apollo/client'
 import { useForm } from 'react-hook-form'
 import { Helmet } from 'react-helmet-async'
 import nuberLogo from '../images/logo.svg'
