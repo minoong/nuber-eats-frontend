@@ -15,6 +15,7 @@ import AddRestaurants from '../pages/owner/add-restaurants'
 import MyRestaurant from '../pages/owner/my-restaurant'
 import AddDish from '../pages/owner/add-dish'
 import Order from '../pages/user/order'
+import Dashboard from '../pages/dirver/dashboard'
 
 const commonRoutes = [
  { path: '/confirm', component: <ConfirmEmail /> },
@@ -52,6 +53,8 @@ const restaurantRoutes = [
  { path: '/restaurants/:restaurantId/add-dish', component: <AddDish /> },
 ]
 
+const driverRoutes = [{ path: '/', component: <Dashboard /> }]
+
 export const LoggedInRouter = () => {
  const { data, loading, error } = useMe()
 
@@ -75,6 +78,12 @@ export const LoggedInRouter = () => {
 
     {data.me.role === UserRole.Owner &&
      restaurantRoutes.map((route) => (
+      <Route exact key={route.path} path={route.path}>
+       {route.component}
+      </Route>
+     ))}
+    {data.me.role === UserRole.Delivery &&
+     driverRoutes.map((route) => (
       <Route exact key={route.path} path={route.path}>
        {route.component}
       </Route>

@@ -51,7 +51,7 @@ const EditProfile = () => {
    //    await refetch()
   }
  }
- const [editProfile, { loading }] = useMutation<editProfile, editProfileVariables>(EDIT_PROFILE_MUTATION, {
+ const [editProfile, { loading, data, error }] = useMutation<editProfile, editProfileVariables>(EDIT_PROFILE_MUTATION, {
   onCompleted,
  })
  const {
@@ -78,6 +78,8 @@ const EditProfile = () => {
    },
   })
  }
+
+ console.log(data, error)
  return (
   <div className="pt-52 flex flex-col justify-center items-center">
    <Helmet>
@@ -100,6 +102,7 @@ const EditProfile = () => {
     />
     <input {...register('password')} name="password" className="input" type="password" placeholder="Password" />
     <Button loading={loading} canClick={isValid} actionText={'Save Profile'} />
+    {data?.editProfile.error}
    </form>
   </div>
  )
