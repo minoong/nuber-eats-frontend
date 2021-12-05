@@ -1,8 +1,9 @@
-import { gql, useSubscription } from '@apollo/client'
+import { gql, useMutation, useSubscription } from '@apollo/client'
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { FULL_ORDER_FRAGMENT } from '../../utils/fragments'
 import { coockedOrders } from '../../__generated__/coockedOrders'
+import { takeOrder, takeOrderVariables } from '../../__generated__/takeOrder'
 
 const COOCKED_ORDERS_SUBSCRIPTION = gql`
  subscription coockedOrders {
@@ -11,6 +12,15 @@ const COOCKED_ORDERS_SUBSCRIPTION = gql`
   }
  }
  ${FULL_ORDER_FRAGMENT}
+`
+
+const TAKE_ORDER_MUTATION = gql`
+ mutation takeOrder($input: TakeOrderInput!) {
+  takeOrder(input: $input) {
+   ok
+   error
+  }
+ }
 `
 
 interface ICoords {
@@ -117,7 +127,25 @@ const Dashboard = () => {
   if (coockedOrdersData?.cookedOrders.id) {
   }
  }, [coockedOrdersData])
+ const history = useHistory()
+ const onCompleted = (data: takeOrder) => {
+  if (data.takeOrder.ok) {
+   history.push(`/orders/${coockedOrdersData?.cookedOrders.id}`)
+  }
+ }
+ const [takeOrderMutation] = useMutation<takeOrder, takeOrderVariables>(TAKE_ORDER_MUTATION, {
+  onCompleted,
+ })
 
+ const triggerMutation = (orderId: number) => {
+  takeOrderMutation({
+   variables: {
+    input: {
+     id: orderId,
+    },
+   },
+  })
+ }
  return (
   <div>
    <div ref={ref} style={{ width: window.innerWidth, height: '40vh' }} />
@@ -126,9 +154,12 @@ const Dashboard = () => {
      <>
       <h1 className="text-center text-3xl font-medium">New Coocked Order</h1>
       <h4 className="text-center my-3 text-2xl font-medium">Pick it up soon @</h4>
-      <Link to={`/orders/${coockedOrdersData.cookedOrders.id}`} className="btn w-full block text-center mt-5">
+      <button
+       onClick={() => triggerMutation(coockedOrdersData.cookedOrders.id)}
+       className="btn w-full block text-center mt-5"
+      >
        Accept Challenge &rarr;
-      </Link>
+      </button>
      </>
     ) : (
      <h1 className="text-center text-3xl font-medium">No orders yet...</h1>

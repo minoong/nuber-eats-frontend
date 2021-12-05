@@ -45,8 +45,16 @@ const Dish: React.FC<IDishProps> = ({
    }`}
   >
    <div className="mb-5">
-    <h3 className="text-lg font-medium mb-5">
-     {name} {orderStarted && <button onClick={onClick}>{isSelected ? 'Remove' : 'Add'}</button>}
+    <h3 className="text-lg font-medium flex items-center ">
+     {name}{' '}
+     {orderStarted && (
+      <button
+       className={`ml-3 py-1 px-3 focus:outline-none text-sm  text-white ${isSelected ? 'bg-red-500' : ' bg-lime-600'}`}
+       onClick={onClick}
+      >
+       {isSelected ? 'Remove' : 'Add'}
+      </button>
+     )}
     </h3>
     <h4 className="font-medium">{description}</h4>
    </div>
