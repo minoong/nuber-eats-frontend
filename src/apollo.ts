@@ -9,6 +9,8 @@ const token = localStorage.getItem(LOCALSTORAGE_TOKEN)
 export const isLoggedInVar = makeVar(Boolean(token))
 export const authTokenVar = makeVar(token)
 
+export const keywordVar = makeVar<string>('')
+
 const wsLink = new WebSocketLink({
  uri: 'ws://localhost:4000/graphql',
  options: {

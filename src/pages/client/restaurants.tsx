@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
+import { keywordVar } from '../../apollo'
 import Restaurant from '../../components/restaurant'
 import { CATEGORY_FRAGEMNT, RESTAURANT_FRAGMENT } from '../../utils/fragments'
 import { restaurantsPageQuery, restaurantsPageQueryVariables } from '../../__generated__/restaurantsPageQuery'
@@ -36,6 +37,7 @@ interface IFormProps {
 }
 
 const Restaurants = () => {
+ const [keyword, setKeyword] = useState<string>('')
  const [page, setPage] = useState(1)
  const { data, loading } = useQuery<restaurantsPageQuery, restaurantsPageQueryVariables>(RESTAURANTS_QUERY, {
   variables: {
@@ -54,10 +56,15 @@ const Restaurants = () => {
   watch,
   formState: { errors, isValid },
   getValues,
- } = useForm<IFormProps>()
+ } = useForm<IFormProps>({
+  defaultValues: {
+   searchTerm: keywordVar(),
+  },
+ })
  const history = useHistory()
  const onSearchSubmit = () => {
   const { searchTerm } = getValues()
+  keywordVar(searchTerm)
   history.push({
    pathname: '/search',
    search: `?term=${searchTerm}`,
